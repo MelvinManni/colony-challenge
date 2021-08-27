@@ -43,10 +43,10 @@ function App() {
       // Get the colony client instance for the betacolony
       const client: ColonyClient = await networkClient.getColonyClient(MAINNET_BETACOLONY_ADDRESS);
       setFormatedEvent([]);
-      // payOutHandler(client, provider);
-      // colInitializedHandler(client, provider);
+      payOutHandler(client, provider);
+      colInitializedHandler(client, provider);
       colRoleHandler(client, provider);
-      // handledomainAdded(client, provider);
+      handledomainAdded(client, provider);
     } catch (error) {
       console.log(error);
     }
@@ -178,6 +178,7 @@ function App() {
 
   useEffect(() => {
     setUpClient();
+    // eslint-disable-next-line
   }, []);
 
   return (
