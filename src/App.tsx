@@ -6,6 +6,7 @@ import { InfuraProvider } from "ethers/providers";
 import { useEffect, useState } from "react";
 import { getLogs } from "@colony/colony-js";
 import { bigNumberHandler, formatHexValue, getUserAddress, getTokenSymbol, timeHandler, roleParser } from "./utils";
+import BackToTop from "./components/BackToTop";
 
 // Set up the network address constants that you'll be using
 // The two below represent the current ones on mainnet
@@ -18,6 +19,7 @@ interface formatedEventInterface {
   eventType: string;
   html: Element;
   date: Date;
+  avatar: string;
 }
 
 function App() {
@@ -40,9 +42,10 @@ function App() {
 
       // Get the colony client instance for the betacolony
       const client: ColonyClient = await networkClient.getColonyClient(MAINNET_BETACOLONY_ADDRESS);
-      payOutHandler(client, provider);
+      setFormatedEvent([]);
+      // payOutHandler(client, provider);
       // colInitializedHandler(client, provider);
-      // colRoleHandler(client, provider);
+      colRoleHandler(client, provider);
       // handledomainAdded(client, provider);
     } catch (error) {
       console.log(error);
@@ -79,6 +82,7 @@ function App() {
                 ),
                 eventType: "PayoutClaimed",
                 date: new Date(date).toLocaleDateString(),
+                avatar: userAddress,
               },
             ] as formatedEventInterface[]
         );
@@ -104,6 +108,7 @@ function App() {
               html: <p className={style.text}>Congratulations! It's a beautiful baby colony!</p>,
               eventType: "ColonyInitialised",
               date: new Date(date).toLocaleDateString(),
+              avatar: eventLogs[index].blockHash,
             },
           ] as formatedEventInterface[]
       );
@@ -116,7 +121,7 @@ function App() {
     const parsedLogs = eventLogs.map((event) => client.interface.parseLog(event));
 
     for (let index = 0; index < eventLogs.length; index++) {
-      const userAddress = await getUserAddress(parsedLogs[index], client);
+      const userAddress = await parsedLogs[index]?.values?.user;
       const date = await timeHandler(eventLogs[index], provider);
       const role = roleParser(parsedLogs[index].values?.role);
       const domainId = formatHexValue(parsedLogs[index], "domainId");
@@ -135,6 +140,7 @@ function App() {
               ),
               eventType: "ColonyRoleSet",
               date: new Date(date).toLocaleDateString(),
+              avatar: userAddress,
             },
           ] as formatedEventInterface[]
       );
@@ -158,11 +164,12 @@ function App() {
               event: ` Domain ${domainId} added.`,
               html: (
                 <p className={style.text}>
-                  Domain<span className={style.heavy}>{domainId}</span> added.
+                  Domain <span className={style.heavy}>{domainId}</span> added.
                 </p>
               ),
               eventType: "DomainAdded",
               date: new Date(date).toLocaleDateString(),
+              avatar: eventLogs[index].blockHash,
             },
           ] as formatedEventInterface[]
       );
@@ -173,13 +180,19 @@ function App() {
     setUpClient();
   }, []);
 
-  console.log(formatedEvents);
-
   return (
     <div className={style.container}>
       <div className={style.eventList}>
-        {/* <EventItem data={} eventHtml={} /> */}
+        {" "}
+        {formatedEvents.length < 1 ? (
+          <p style={{ textAlign: "center", margin: 20 }}>Loading...</p>
+        ) : (
+          formatedEvents
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) //Sort the events from latest to oldest
+            .map((val) => <EventItem avatar={val.avatar} children={val.html} date={val.date} />)
+        )}
       </div>
+      <BackToTop />
     </div>
   );
 }

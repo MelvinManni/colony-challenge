@@ -1,16 +1,23 @@
 .text {
   font-family: "Mulish";
-  font-weight: "regular";
+  font-weight: 400;
   font-size: 14px;
   line-height: 18px;
+  text-overflow: ellipsis;
+  color: #121212;
+}
+
+.text:hover {
+  text-overflow: unset;
 }
 
 .heavy {
-  font-weight: "heavy";
+  font-weight: 700;
 }
 
-.text-small {
+.textSmall {
   font-size: 12px;
+  color: rgb(128, 128, 128);
 }
 
 .container {
@@ -42,18 +49,20 @@
 }
 
 .listItem:hover {
+  transition: 0.3s ease all;
   animation: breath 2s ease infinite;
 }
 
 .listItem::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   right: 0;
   height: 0;
   bottom: -1px;
-  background-color: #a6d8c4;
-  transition: 0.3s ease-in-out;
+  background-color: #b7d3c8;
+  transition: 0.3s ease all;
+  z-index: -1;
 }
 
 .listItem:hover::before {
@@ -64,6 +73,32 @@
   width: 37px;
   height: 37px;
   border-radius: 50%;
+  overflow: hidden;
+  margin-right: 15px;
+}
+
+.row {
+  display: flex;
+}
+
+.mr {
+  margin-right: 10px;
+}
+
+.toTop {
+  background-color: #1850e9; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  border-radius: 5px;
+  position: fixed;
+  bottom: 60px;
+  right: 20px;
+  cursor: pointer;
 }
 
 @keyframes breath {

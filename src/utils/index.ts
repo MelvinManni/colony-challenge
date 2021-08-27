@@ -40,8 +40,6 @@ export const timeHandler = async (data: any, provider: any) => {
 };
 
 export const roleParser = (id: number) => {
-  console.log(ColonyRole[0]);
-
   return ColonyRole[id];
 };
 
@@ -53,3 +51,44 @@ export const getTokenSymbol = async (address: string) => {
   return res.symbol;
 };
 
+const monthMMMFormat = (val: number) => {
+  switch (val) {
+    case 0:
+      return "Jan";
+    case 1:
+      return "Feb";
+    case 2:
+      return "Mar";
+    case 3:
+      return "Apr";
+    case 4:
+      return "May";
+    case 5:
+      return "Jun";
+    case 6:
+      return "Jul";
+    case 7:
+      return "Aug";
+    case 8:
+      return "Sep";
+    case 9:
+      return "Oct";
+    case 10:
+      return "Nov";
+    case 11:
+      return "Dec";
+    default:
+      return null;
+  }
+};
+
+export const dateFormater = (date: Date) => {
+  const dateVal: Date = new Date(date);
+  let day = dateVal.getDate().toString();
+  if (day.length < 2) day = "0" + day;
+  if (new Date().getFullYear() === dateVal.getFullYear()) {
+    return day + " " + monthMMMFormat(dateVal.getMonth());
+  } else {
+    return day + " " + monthMMMFormat(dateVal.getMonth()) + " " + dateVal.getFullYear();
+  }
+};
